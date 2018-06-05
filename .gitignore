@@ -1,5 +1,7 @@
 # output directories from running code
 output/
+output_detectioncurves/
+output_navigationerror/
 
 # History files
 .Rhistory

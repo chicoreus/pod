@@ -23,6 +23,8 @@ plotH<-1200
 outputDirectory <- file.path("output_detectioncurves")
 
 # ******** Begin *************
+if (!dir.exists(outputDirectory)){ dir.create(outputDirectory) }
+
 output <- HTMLInitFile(outputDirectory,filename="pod_output")
 HTML.title("Modeling POD");
 

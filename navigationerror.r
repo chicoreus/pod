@@ -4,6 +4,10 @@ require('sp')    # Spatial objects
 require('rgeos') # Spatial functions
 
 iterations<-10000
+iterations<-100
+nav_subjects <- 100
+repeat_steps <- 100
+repeat_steps <- 10
 
 # Graph heighs and widths
 squarePlotW<-1200
@@ -44,6 +48,7 @@ pUnionAnyOneOf <- function(p){ 1 - prod(1-p) }
 
 sweepRandom <- function(sweepcount, eswRange, segmentMinX=0, segmentMaxX=100, segmentMinY=0, segmentMaxY=100, doPlot=TRUE) { 
    sensorRuns <- list()
+   searchLength <- 0
    for(iter in seq(1,sweepcount)) {
      segmentLength <- 15
      x1 <- runif(1,min=0,max=100)
@@ -83,6 +88,7 @@ sweepParalell <- function(sweepcount, eswRange, segmentMinX=0, segmentMaxX=100, 
    sensorRuns <- list()
    length <- segmentMaxX - segmentMinX
    sweepSpacing <- length/sweepcount
+   searchLength <- 0
    for(iter in seq(1,sweepcount+1)) {
      segmentLength <- segmentMaxY - segmentMinY
      x1 <- (sweepSpacing * iter) - (sweepSpacing)
@@ -127,6 +133,7 @@ sweepParalellError <- function(sweepcount, eswRange, segmentMinX=0, segmentMaxX=
    nextX  <- 0
    error <- naverr.env$percent
    sweepNo <- 0
+   searchLength <- 0
    for(iter in seq(1,ceiling(sweepcount/2)+1)) {
      sweepNo <- sweepNo +1
      segmentLength <- segmentMaxY - segmentMinY
@@ -564,7 +571,9 @@ save(rframe,file=file.path(outputDirectory,paste('paralelldetectionsim_',iterati
 
 # Simulations with errors in navigation.  
 
-print("paralell (with error) sweeps")
+
+
+print("parallel (with error) sweeps")
 
 sweepnumbers <- c(seq(1,20,by=3),seq(22,50,by=4),seq(54,200,by=6))
 
@@ -581,9 +590,9 @@ for (err in errorSteps) {
    for (sweepcount in sweepnumbers) { 
       rc <- list()
       rp <- list()
-      mstep <- 100
+      mstep <- repeat_steps
       for (i in seq(1,mstep)) { 
-          run <- calculateSweeps(sweepcount,doPlot=FALSE,lrangecurve=expLRC,sweepModel=sweepParalellError,subjectCount=iterations)
+          run <- calculateSweeps(sweepcount,doPlot=FALSE,lrangecurve=expLRC,sweepModel=sweepParalellError,subjectCount=nav_subjects)
           rc <- c(rc,run$coverage)
           rp <- c(rp,run$podObs)
 print(paste(sweepcount," ",i," ",run$coverage, " ", run$podObs))
@@ -622,7 +631,7 @@ lines(coverages,f(coverages),col="blue")
 dev.off()
 
 rframe <- data.frame(runsExpCErr)
-save(rframe,file=file.path(outputDirectory,paste('paralellerr_cvals_',length(errorSteps),'_',iterations,'.data',sep='')))
+save(rframe,file=file.path(outputDirectory,paste('paralellerr_cvals_',length(errorSteps),'_',nav_subjects,'.data',sep='')))
 rframe <- data.frame(runsExpPErr)
-save(rframe,file=file.path(outputDirectory,paste('paralellerr_pvals_',length(errorSteps),'_',iterations,'.data',sep='')))
+save(rframe,file=file.path(outputDirectory,paste('paralellerr_pvals_',length(errorSteps),'_',nav_subjects,'.data',sep='')))
 
