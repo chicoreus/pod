@@ -1,3 +1,6 @@
+# output directories from running code
+output/
+
 # History files
 .Rhistory
 .Rapp.history
