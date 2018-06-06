@@ -4,7 +4,7 @@ require('sp')    # Spatial objects
 require('rgeos') # Spatial functions
 
 iterations<-10000
-iterations<-100
+#iterations<-100
 nav_subjects <- 100
 repeat_steps <- 100
 repeat_steps <- 10
@@ -455,7 +455,7 @@ f<-function(x) { 1- exp(-abs(x))}
 lines(runsC,f(runsC),col="blue")
 
 legend("bottomright", pch = c(1, 1, 1, 1, 1, NA), lty=c(1,1,1,1,1,1), col = c("black", "red", "darkgreen","green", "green3", "blue"), 
-        legend = c("Exponential LRC", "Definite Range LRC", "Exponential (10) LRC","Exponential (10)*.9 LRC", "Inverse Cube LRC", "Exponential Detection Function"))
+        legend = c("Exponential LRC", "Definite Range LRC", "Exponential (10) LRC","exp(-abs(x)^10)*0.9 LRC", "Inverse Cube LRC", "Exponential Detection Function"))
 
 dev.off()
 
@@ -476,6 +476,27 @@ legend("bottomright", pch = c(1, 1, NA), lty=c(1,1,1), col = c("black", "red","b
         legend = c("Exponential LRC", "Definite Range LRC", "Exponential Detection Function"))
 
 dev.off()
+
+
+# Plot just the exponential and exponential ^10 * .9 results
+graphrsee109<-"randomsweepssimexpexp109.png"
+png(file.path(outputDirectory,graphrsee109),width=plotW,height=plotH)
+par(cex=fontScaling)
+plot(runsExpC,runsExpP,xlim=c(0,4),ylim=c(0,1),xlab="Coverage",ylab="POD",main="Detection With Random Sweeps")
+lines(runsExpC,runsExpP,lty=2)
+points(runsExp109C,runsExp109P,col="darkgreen")
+lines(runsExp109C,runsExp109P,col="darkgreen",lty=2)
+
+# Add the exponential detection function to the plot
+f<-function(x) { 1- exp(-abs(x))}
+lines(runsC,f(runsC),col="blue")
+
+legend("bottomright", pch = c(1, 1, NA), lty=c(1,1,1), col = c("black", "darkgreen","blue"),
+        legend = c("Exponential LRC", "exp(-abs(x)^10)*0.9 LRC", "Exponential Detection Function"))
+
+dev.off()
+
+
 
 rframe <- data.frame(runsExpC,runsExpP,runsDefC, runsDefP, runsExp10C, runsExp10P, runsIncC, runsIncP)
 save(rframe,file=file.path(outputDirectory,paste('randomdetectionsim_',iterations,'.data',sep='')))
@@ -519,6 +540,17 @@ runsExp10P<-runsP
 
 runsC<-c()
 runsP<-c()
+for (sweepcount in sweepnumbers) {
+   run <- calculateSweeps(sweepcount,doPlot=FALSE,lrangecurve=exp10NinteyLRC,sweepModel=sweepParalell,subjectCount=iterations)
+   runsC <- c(runsC,run$coverage)
+   runsP <- c(runsP,run$podObs)
+}
+runsExp109C<-runsC
+runsExp109P<-runsP
+
+
+runsC<-c()
+runsP<-c()
 for (sweepcount in sweepnumbers) { 
    run <- calculateSweeps(sweepcount,doPlot=FALSE,lrangecurve=invcuLRC,sweepModel=sweepParalell,subjectCount=iterations)
    runsC <- c(runsC,run$coverage)
@@ -527,6 +559,7 @@ for (sweepcount in sweepnumbers) {
 runsIncC<-runsC
 runsIncP<-runsP
 
+# Plot detection functions for the exponential and definite range lateral range curves
 graphpsed<-"paralellsweepssimexpdef.png"
 png(file.path(outputDirectory,graphpsed),width=plotW,height=plotH)
 par(cex=fontScaling)
@@ -534,16 +567,32 @@ plot(runsExpC,runsExpP,xlim=c(0,4),ylim=c(0,1),xlab="Coverage",ylab="POD",main="
 lines(runsExpC,runsExpP,lty=2)
 points(runsDefC,runsDefP,col="red")
 lines(runsDefC,runsDefP,col="red",lty=2)
-
 # Add the exponential detection function to the plot
 f<-function(x) { 1- exp(-abs(x))}
 lines(runsC,f(runsC),col="blue")
-
 legend("bottomright", pch = c(1, 1, NA), lty=c(1,1,1), col = c("black", "red","blue"),
         legend = c("Exponential LRC", "Definite Range LRC", "Exponential Detection Function"))
-
 dev.off()
 
+# Plot detection functions for the exponential, exponential with exponent of 10 scaled to 90%, and definite range lateral range curves
+graphpsee109<-"paralellsweepssimexpe109.png"
+png(file.path(outputDirectory,graphpsee109),width=plotW,height=plotH)
+par(cex=fontScaling)
+plot(runsExpC,runsExpP,xlim=c(0,4),ylim=c(0,1),xlab="Coverage",ylab="POD",main="Detection With Paralell Sweeps")
+lines(runsExpC,runsExpP,lty=2)
+points(runsDefC,runsDefP,col="red")
+lines(runsDefC,runsDefP,col="red",lty=2)
+points(runsExp109C,runsExp109P,col="darkgreen")
+lines(runsExp109C,runsExp109P,col="darkgreen",lty=2)
+# Add the exponential detection function to the plot
+f<-function(x) { 1- exp(-abs(x))}
+lines(runsC,f(runsC),col="blue")
+legend("bottomright", pch = c(1,1,1, NA), lty=c(1,1,1,1), col = c("black","darkgreen","red","blue"),
+        legend = c("Exponential LRC", "exp(-abs(x)^10)*0.9 LRC", "Definite Range LRC","Exponential Detection Function"))
+dev.off()
+
+
+# Plot detection functions for the exponential, exponential with exponent of 10, inverse cube, and definite range lateral range curves
 graphps<-"paralellsweepssim.png"
 png(file.path(outputDirectory,graphps),width=plotW,height=plotH)
 par(cex=fontScaling)
@@ -555,23 +604,22 @@ points(runsExp10C,runsExp10P,col="darkgreen")
 lines(runsExp10C,runsExp10P,col="darkgreen",lty=2) 
 points(runsIncC,runsIncP,col="green3") 
 lines(runsIncC,runsIncP,col="green3",lty=2) 
-
 # Add the exponential detection function to the plot
 f<-function(x) { 1- exp(-abs(x))}
 lines(runsC,f(runsC),col="blue")
-
 legend("bottomright", pch = c(1, 1, 1, 1, NA), lty=c(1,1,1,1,1), col = c("black", "red", "darkgreen", "green3", "blue"), 
         legend = c("Exponential LRC", "Definite Range LRC", "Exponential (10) LRC", "Inverse Cube LRC", "Exponential Detection Function"))
-
 dev.off()
 
-rframe <- data.frame(runsExpC,runsExpP,runsDefC, runsDefP, runsExp10C, runsExp10P, runsIncC, runsIncP)
+rframe <- data.frame(runsExpC,runsExpP,runsDefC, runsDefP, runsExp10C, runsExp10P, runsIncC, runsIncP,runsExp109C,runsExp109P)
 save(rframe,file=file.path(outputDirectory,paste('paralelldetectionsim_',iterations,'.data',sep='')))
 
 
 # Simulations with errors in navigation.  
-
-
+# Model of navigation is of a sweep with some navigation error plus or minus of the intended end point, then a 
+# fixed length step to the next sweep, then some navigation error plus or minus in returning to the base line, then 
+# a fixed length step to the next sweep, then repeat.  Navigation errors can add up leaving gaps that aren't covered
+# by other sweeps.  
 
 print("parallel (with error) sweeps")
 
