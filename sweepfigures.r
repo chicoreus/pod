@@ -190,6 +190,12 @@ par(cex.main=fontScaling)
 plotParallelSweeps(13,TRUE,textOnPlot)
 dev.off();
 
+graphps8<-"parallelsweep_8.png"
+png(file.path(outputDirectory,graphps8),width=squarePlotW,height=squarePlotH)
+par(cex.main=fontScaling)
+plotParallelSweeps(20,TRUE,textOnPlot)
+dev.off();
+
 graphps3<-"parallelsweep_1.png"
 png(file.path(outputDirectory,graphps3),width=squarePlotW,height=squarePlotH)
 par(cex.main=fontScaling)
