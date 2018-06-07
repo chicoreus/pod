@@ -30,6 +30,7 @@ HTML.title("Modeling POD");
 
 HTML("This is output from the run of an R program that examines the relationship between lateral range curves, detection functions, coverage, and POD.")
 
+print("setup done")
 # Draw a diagram of several randomly oriented sweeps.
 
 cf <- function(slope) { 1/sqrt(1+slope^2) } 
@@ -46,70 +47,71 @@ par(cex.main=1.8, cex.lab=0.1)
 
 for (maxiter in c(2,4,8,16)) { 
 
-plot(c(0,1),c(0,1),xaxs = 'i',yaxs = 'i', xaxt='n', yaxt='n', ann=FALSE)
-searchLength <- 0
-for(iter in seq(1,maxiter)) { 
-  side <- sample(1:4,1)
-  side2 <- sample(1:4,1)
-  while (side2==side) { side2 <- round(runif(1)*3)+1 }
-  pos1 <- runif(1,min=-.1,max=1.1)
-  while (pos1 <0 | pos1>1) {  pos1 <- runif(1,min=-.1,max=1.1) } 
-  pos2 <- runif(1,min=-1.,max=1.1) 
-  while (pos2 <0 | pos2>1) {  pos2 <- runif(1,min=-1.,max=1.1) }
-  if (side==1) { 
-    x1 <- pos1
-    y1<- -0.1
-  }
-  if (side==3) { 
-    x1 <- pos1
-    y1<- 1.1
-  }
-  if (side==2) { 
-    x1 <- 1.1
-    y1<- pos1
-  }
-  if (side==4) { 
-    x1 <- -0.1
-    y1<- pos1
-  }
-
-  if (side2==1) {
-    x2 <- pos2
-    y2<- -0.1
-  }
-  if (side2==3) {
-    x2 <- pos2
-    y2<- 1.1
-  }
-  if (side2==2) {
-    x2 <- 1.1
-    y2<- pos2
-  }
-  if (side2==4) {
-    x2 <- -0.1
-    y2<- pos2
-  }
-  segmentLength <- sqrt( (abs(x1-x2)^2) * ( abs(y1-y2)^2))
-  searchLength<-searchLength+segmentLength
-  lines(c(x1,x2),c(y1,y2),col="blue")
-  slope <- - 1/((diff(c(y1,y2))/diff(c(x1,x2))))
-  w <- 0.1
-  xes <- c(xm(x1,w,slope),xp(x1,w,slope),xp(x2,w,slope),xm(x2,w,slope))
-  yes <- c(ym(y1,w,slope),yp(y1,w,slope),yp(y2,w,slope),ym(y2,w,slope))
-  polygon(xes,yes,col=adjustcolor("gray",alpha.f=0.2))
-}
-  # multipy by 10 (detectionRange = 1 instead of 0.1
-  searchWidth<-2
-  searchArea<-10*10
-  searchLength<-searchLength*10
-  w<-(searchWidth*searchLength)/searchArea
-  p<-1-exp(-w)
-  w1<-1-((searchWidth*searchLength)/(maxiter*searchArea))
-  p1<-1-(w1^maxiter)
-  title(main=paste("p=",round(p,digits=2)))
+   plot(c(0,1),c(0,1),xaxs = 'i',yaxs = 'i', xaxt='n', yaxt='n', ann=FALSE)
+   searchLength <- 0
+   for(iter in seq(1,maxiter)) { 
+      side <- sample(1:4,1)
+      side2 <- sample(1:4,1)
+      while (side2==side) { side2 <- round(runif(1)*3)+1 }
+      pos1 <- runif(1,min=-.1,max=1.1)
+      while (pos1 <0 | pos1>1) {  pos1 <- runif(1,min=-.1,max=1.1) } 
+      pos2 <- runif(1,min=-1.,max=1.1) 
+      while (pos2 <0 | pos2>1) {  pos2 <- runif(1,min=-1.,max=1.1) }
+      if (side==1) { 
+        x1 <- pos1
+        y1<- -0.1
+      }
+      if (side==3) { 
+        x1 <- pos1
+        y1<- 1.1
+      }
+      if (side==2) { 
+        x1 <- 1.1
+        y1<- pos1
+      }
+      if (side==4) { 
+        x1 <- -0.1
+        y1<- pos1
+      }
+    
+      if (side2==1) {
+        x2 <- pos2
+        y2<- -0.1
+      }
+      if (side2==3) {
+        x2 <- pos2
+        y2<- 1.1
+      }
+      if (side2==2) {
+        x2 <- 1.1
+        y2<- pos2
+      }
+      if (side2==4) {
+        x2 <- -0.1
+        y2<- pos2
+      }
+      segmentLength <- sqrt( (abs(x1-x2)^2) * ( abs(y1-y2)^2))
+      searchLength<-searchLength+segmentLength
+      lines(c(x1,x2),c(y1,y2),col="blue")
+      slope <- - 1/((diff(c(y1,y2))/diff(c(x1,x2))))
+      w <- 0.1
+      xes <- c(xm(x1,w,slope),xp(x1,w,slope),xp(x2,w,slope),xm(x2,w,slope))
+      yes <- c(ym(y1,w,slope),yp(y1,w,slope),yp(y2,w,slope),ym(y2,w,slope))
+      polygon(xes,yes,col=adjustcolor("gray",alpha.f=0.2))
+   }
+   # multipy by 10 (detectionRange = 1 instead of 0.1
+   searchWidth<-2
+   searchArea<-10*10
+   searchLength<-searchLength*10
+   w<-(searchWidth*searchLength)/searchArea
+   p<-1-exp(-w)
+   w1<-1-((searchWidth*searchLength)/(maxiter*searchArea))
+   p1<-1-(w1^maxiter)
+   title(main=paste("p=",round(p,digits=2)))
 }
 dev.off();
 
+print("random sweeps diagram done")
 # draw some random sweeps which fit the expectations of the exponential detection function (placed randomly, short relative to search area, longer than effective sweep width, placed independently of each other)
 
 plotRandomSweeps <- function(maxiter,doPlot=TRUE) { 
@@ -333,6 +335,7 @@ lines(c(0,1,1,1),c(.63,.63,.63,0),col="brown")
 
 dev.off()
 
+print("random plots done")
 
 HTML("<p>We'll start with lateral range curves.  Lateral range curves represent the probability that a target at some distance from a sensor will be detected by the sensor.  The x axis of a lateral range curve is the distance from the sensor to a target.  The y axis of a lateral range curve is the instantaneous probability of detection of a target at that range.</p>")
 
@@ -574,6 +577,7 @@ HTMLInsertGraph(graphpcs1,file=output,Caption="Exponential lateral range curve, 
 coveragesFirst <- coverages
 podsFirst <- pods
 
+print("exponential lrc, paralell sweeps done")
 #graphpcs1a<-"coveragecurves1a.png"
 #png(file.path(outputDirectory,graphpcs1a),width=1500,height=1200)
 #par(cex=fontScaling);
@@ -687,6 +691,7 @@ for (sp in sweepsPerWidth) {
 }
 dev.off()
 
+print("Normal LRC, paralell sweeps done")
 
 HTMLInsertGraph(graphpcs2,file=output,Caption="Normal lateral range curve exp(-|x^2|), showing multiple paralell sweeps.  One effective sweep width shown in tan.  Cumulative probability in blue.  Each separate sweep in black.")
 
@@ -782,6 +787,8 @@ lines(coverages,pods,type="l",col="darkgoldenrod4",xlim=c(0,2.0),ylim=c(0,1))
 
 dev.off();
 
+print("Comparison plot done")
+
 rframe <- data.frame(coveragesFirst, podsFirst, coveragesSecond, podsSecond, coveragesThird, podsThird, coveragesIter, podsIter, coveragesIterPB, podsIterPB)
 rframe41 <- data.frame(coverage_exp, pod_exp, coverage_pb, pod_pb)
 save(rframe,file=file.path(outputDirectory,paste('coveagepodsim_',iterations,'.data',sep='')))
@@ -816,3 +823,5 @@ HTML("<p>If we examine the detection functions for a variety of lateral range cu
 HTMLInsertGraph(graphpcs,file=output,Caption="Coverage POD relationships by simulation for various lateral range curves under paralell sweeps.")
 
 HTMLEndFile()
+
+print("finished")
