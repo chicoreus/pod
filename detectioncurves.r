@@ -172,7 +172,7 @@ plotRandomSweeps <- function(maxiter,doPlot=TRUE) {
    return( pairlist(p=p,coverage=coverage,podObs=pod) )
 }
 
-plotParalellSweeps <- function(totalSweeps,doPlot=TRUE) { 
+plotParallelSweeps <- function(totalSweeps,doPlot=TRUE) { 
 
    if (doPlot) {  plot(c(0,100),c(0,100),xaxs = 'i',yaxs = 'i', xaxt='n', yaxt='n', ann=FALSE) }
    searchLength <- 0
@@ -254,11 +254,11 @@ plotRandomSweeps(500,TRUE)
 
 dev.off();
 
-graphps<-"paralellsweep.png"
+graphps<-"parallelsweep.png"
 png(file.path(outputDirectory,graphps),width=squarePlotW,height=squarePlotH)
 par(cex.main=fontScaling)
 
-plotParalellSweeps(8,TRUE)
+plotParallelSweeps(8,TRUE)
 
 dev.off();
 
@@ -292,7 +292,7 @@ cop<-c()
 for (makeSearches in searchBits) {
    iterate<-3
    for (rep in 1:iterate) {
-      result <- plotParalellSweeps(makeSearches,FALSE)
+      result <- plotParallelSweeps(makeSearches,FALSE)
       prp<-c(prp,result$podObs)
       cop<-c(cop,result$coverage)
    }
@@ -301,7 +301,7 @@ for (makeSearches in searchBits) {
 points(cop,prp)
 
 rgframep <- data.frame(prp,cop)
-save(rgframep,file=file.path(outputDirectory,paste('paralellsweeps_',iterations,'.data',sep='')))
+save(rgframep,file=file.path(outputDirectory,paste('parallelsweeps_',iterations,'.data',sep='')))
 
 coverage <- seq(0,4,by=0.1)
 # exponential - any lateral range curve, random sweeps.
@@ -445,7 +445,7 @@ HTML("<p>The 4 curves above are all variations on the exponential lateral range 
 graphpc<-"coveragepod.png"
 png(file.path(outputDirectory,graphpc),width=plotW,height=plotH)
 par(cex=.9,cex.lab=fontScaling,cex.axis=fontScaling,mar=c(6, 6, 2, 2)+0.1,lwd=2)
-#perfect broom/Definite range lateral range curve, paralell sweeps.
+#perfect broom/Definite range lateral range curve, parallel sweeps.
 f<-function(x) { ifelse( x>=1 | x<=-1 ,0,1) }
 coverage <- seq(0,4,by=0.1)
 pod <- c()
@@ -486,7 +486,7 @@ lp<-function(f,x,spacing) {
 
 x<-c(0,10)
 y<-c(0,1)
-plot(x,y,type="p",xlim=c(0,10),ylim=c(0,1),main="Exponential lateral range curve, paralell sweeps",col="white",xlab="Distance",ylab="POD")
+plot(x,y,type="p",xlim=c(0,10),ylim=c(0,1),main="Exponential lateral range curve, parallel sweeps",col="white",xlab="Distance",ylab="POD")
 
 # simple case, probability of any one of a list of probabilities.
 pUnionAnyOneOf <- function(p){ 1 - prod(1-p) } 
@@ -572,12 +572,12 @@ for (sp in sweepsPerWidth) {
 } 
 dev.off()
 
-HTMLInsertGraph(graphpcs1,file=output,Caption="Exponential lateral range curve, showing multiple paralell sweeps.  One effective sweep width shown in tan.  Cumulative probability in blue.  Each separate sweep in black.")
+HTMLInsertGraph(graphpcs1,file=output,Caption="Exponential lateral range curve, showing multiple parallel sweeps.  One effective sweep width shown in tan.  Cumulative probability in blue.  Each separate sweep in black.")
 
 coveragesFirst <- coverages
 podsFirst <- pods
 
-print("exponential lrc, paralell sweeps done")
+print("exponential lrc, parallel sweeps done")
 #graphpcs1a<-"coveragecurves1a.png"
 #png(file.path(outputDirectory,graphpcs1a),width=1500,height=1200)
 #par(cex=fontScaling);
@@ -651,7 +651,7 @@ coveragesIterPB <- coverages
 podsIterPB <- pods
 
 
-# Normal lateral range curve, paralell sweeps
+# Normal lateral range curve, parallel sweeps
 graphpcs2<-"coveragecurves2.png"
 png(file.path(outputDirectory,graphpcs2),width=plotW,height=plotH)
 par(cex=fontScaling);
@@ -691,9 +691,9 @@ for (sp in sweepsPerWidth) {
 }
 dev.off()
 
-print("Normal LRC, paralell sweeps done")
+print("Normal LRC, parallel sweeps done")
 
-HTMLInsertGraph(graphpcs2,file=output,Caption="Normal lateral range curve exp(-|x^2|), showing multiple paralell sweeps.  One effective sweep width shown in tan.  Cumulative probability in blue.  Each separate sweep in black.")
+HTMLInsertGraph(graphpcs2,file=output,Caption="Normal lateral range curve exp(-|x^2|), showing multiple parallel sweeps.  One effective sweep width shown in tan.  Cumulative probability in blue.  Each separate sweep in black.")
 
 coveragesSecond <- coverages
 podsSecond <- pods
@@ -739,7 +739,7 @@ for (sp in sweepsPerWidth) {
 }
 dev.off()
 
-HTMLInsertGraph(graphpcs3,file=output,Caption=paste("Normal lateral range curve exp(-|x^10|)*0.9, showing multiple paralell sweeps at a coverage of ",dispCov,".  One effective sweep width shown in tan.  Cumulative probability in blue.  Each separate sweep in black."))
+HTMLInsertGraph(graphpcs3,file=output,Caption=paste("Normal lateral range curve exp(-|x^10|)*0.9, showing multiple parallel sweeps at a coverage of ",dispCov,".  One effective sweep width shown in tan.  Cumulative probability in blue.  Each separate sweep in black."))
 
 coveragesThird <- coverages
 podsThird <- pods
@@ -796,7 +796,7 @@ save(rframe41,file=file.path(outputDirectory,paste('coveagepod41sim_',iterations
 
 HTML("<p>Now let's consider the effect of how sweeps are run against probability of detection.</p>")
 
-HTML("<p>We can have sweeps run paralell in a search segment.  If the paralell sweeps are spaced out one effective sweep width apart (center to center), there is a coverage of 1.  If sweeps are spaced twice the effective sweep width apart (center to center), then there is a coverage of 1/2.  With a perfect broom (definite range) lateral range curve, the relationship between coverage and probability of detection is obvious when sweeps are paralell.  At a coverage of 1, there is a POD of 1.  Placing sweeps closer together to increase the coverage above q1 can't increase the POD above 1.  Placing sweeps further apart linearly decreases the POD.  At a coverage of 1/2, the POD is 50%.  At a coverage of 1/4, the POD is 25%.</p>")
+HTML("<p>We can have sweeps run parallel in a search segment.  If the parallel sweeps are spaced out one effective sweep width apart (center to center), there is a coverage of 1.  If sweeps are spaced twice the effective sweep width apart (center to center), then there is a coverage of 1/2.  With a perfect broom (definite range) lateral range curve, the relationship between coverage and probability of detection is obvious when sweeps are parallel.  At a coverage of 1, there is a POD of 1.  Placing sweeps closer together to increase the coverage above q1 can't increase the POD above 1.  Placing sweeps further apart linearly decreases the POD.  At a coverage of 1/2, the POD is 50%.  At a coverage of 1/4, the POD is 25%.</p>")
 
 HTML("<p>Things get more interesting if we take that same perfect broom (definite range) lateral range curve and place the sweeps randomly in the search segment.</p>")
 
@@ -807,20 +807,20 @@ HTML("<p>Since we are placing the sweeps randomly in the search area, let's repe
 
 HTMLInsertGraph(graphrsrsdf,file=output,Caption="Relationship between coverage and POD for simulations of randomly placed definite range sweeps.")
 
-HTML("<p>The points in the graph above for random simulations of detection fall along the line of the exponential detection function - POD (detection) increases as a function of e raised to the negative absolute value of the coverage  p=e^(-|coverage|).    Paralell sweeps with a perfect broom (definite range lateral range function) with a coverage of 1 result in a POD of 1, and increasing coverage can't increase the POD.  Place those sweeps randomly in the search area, and this random placement introduces inefficency in the form of random overlaps - coverage is a measure of the search effort (that is the total area searched), not just the area searce at least once.   </p>")
+HTML("<p>The points in the graph above for random simulations of detection fall along the line of the exponential detection function - POD (detection) increases as a function of e raised to the negative absolute value of the coverage  p=e^(-|coverage|).    Parallel sweeps with a perfect broom (definite range lateral range function) with a coverage of 1 result in a POD of 1, and increasing coverage can't increase the POD.  Place those sweeps randomly in the search area, and this random placement introduces inefficency in the form of random overlaps - coverage is a measure of the search effort (that is the total area searched), not just the area searce at least once.   </p>")
 
 
 HTML("<p>Randomly placing relatively short sweeps, each independent of the others, in a search segment, results in coverage gradually increasing - and the more of the area gets covered, the harder it is to randomly place a sweep on an area that hasn't been swept yet.  This results in an exponential relationship between the coverage and the POD.  This exponential detection function is not to be confused with the exponential lateral range curve, even though the two curves have the same formula.  The exponential detection function describes the relationship between coverage and probability of detection for randomly placed sweeps (for any lateral range curve).  The exponential lateral range curve describes visual detection dropping off exponentially with distance from the searcher.</p>")
 
-HTML("<p>So, for a perfect broom (that is, definite range detection function), there are two end members for the detection function (coverage-POD relationship).  If the perfect broom sweeps in neat paralell lines, there is a neat linear relationship between coverage and POD from 0 to 1.  In this range, the coverage equals the POD.  For a coverage over one, POD remains at one.   However, if the perfect broom sweeps are random and independent of each other, the coverage-POD relationship follows the exponential detection function.  Under randomly placed perfect broom sweeps, a coverage of 1 provides a POD of 0.63 (that is, 63%), not one.  With the exponential detection function, low coverages are inefective, and high coverages are inefficeient (as the perfect broom sweeps randomly overlap each other more and more of the time with little gain in added searched area).  The middle ground of coverages around 1 is efficient search.</p>")
+HTML("<p>So, for a perfect broom (that is, definite range detection function), there are two end members for the detection function (coverage-POD relationship).  If the perfect broom sweeps in neat parallel lines, there is a neat linear relationship between coverage and POD from 0 to 1.  In this range, the coverage equals the POD.  For a coverage over one, POD remains at one.   However, if the perfect broom sweeps are random and independent of each other, the coverage-POD relationship follows the exponential detection function.  Under randomly placed perfect broom sweeps, a coverage of 1 provides a POD of 0.63 (that is, 63%), not one.  With the exponential detection function, low coverages are inefective, and high coverages are inefficeient (as the perfect broom sweeps randomly overlap each other more and more of the time with little gain in added searched area).  The middle ground of coverages around 1 is efficient search.</p>")
 
 HTMLInsertGraph(graphpc,file=output,Caption="Coverage POD relationships (detection functions) the and perfect broom (definite range) lateral range curve under parallel or random sweeps.")
 
 
 
-HTML("<p>If we examine the detection functions for a variety of lateral range curves in paralell sweeps, these detection functions end up as curves falling between the detection function for the perfect broom in parallel sweeps and the perfect broom in random sweeps (the exponential detection function).  The exponential detection function can be thought of as a conservative detection function which accounts for random variability and navigation errors in paralell sweeps for any lateral range curve.</p>")
+HTML("<p>If we examine the detection functions for a variety of lateral range curves in parallel sweeps, these detection functions end up as curves falling between the detection function for the perfect broom in parallel sweeps and the perfect broom in random sweeps (the exponential detection function).  The exponential detection function can be thought of as a conservative detection function which accounts for random variability and navigation errors in parallel sweeps for any lateral range curve.</p>")
 
-HTMLInsertGraph(graphpcs,file=output,Caption="Coverage POD relationships by simulation for various lateral range curves under paralell sweeps.")
+HTMLInsertGraph(graphpcs,file=output,Caption="Coverage POD relationships by simulation for various lateral range curves under parallel sweeps.")
 
 HTMLEndFile()
 

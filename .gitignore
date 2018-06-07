@@ -1,5 +1,6 @@
 # output directories from running code
 output/
+output_figures/
 output_detectioncurves/
 output_navigationerror/
 

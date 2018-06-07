@@ -1,7 +1,7 @@
 # A couple of simple figures.
 
 #X11()
-outputDirectory <- file.path("output")
+outputDirectory <- file.path("output_figures")
 if (!dir.exists(outputDirectory)){ dir.create(outputDirectory) }
 
 plotW<-1200
