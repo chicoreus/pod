@@ -130,6 +130,62 @@ arrows(aoc/2, 0.6, -aoc/2 ,0.6, col="blue",code=3)
 dev.off();
 
 
+# Same graps,but separate and with with areas shaded.
+graph2exp<-"exp_LRC_curvesshaded.png"
+png(file.path(outputDirectory,graph2exp),width=plotW,height=plotH)
+par(lwd=2)
+par(cex=1.2)
+par(cex.axis=2.2)
+# Exponential lateral range curve 
+x<-seq(-3,3,0.01)
+y<-exp(-abs(x))
+plot(x,y,type="h", ylab="POD", xlab=NULL,col="grey95",ann=FALSE,ylim=c(0,1))
+lines(x,y,type="l",col="black")
+aoc<-sum(diff(x) * (head(y,-1)+tail(y,-1)))/2
+lines(c(aoc/2,aoc/2),c(0,1),col='blue')
+lines(c(-aoc/2,-aoc/2),c(0,1),col='blue')
+arx<-c(aoc/2,aoc/2,-aoc/2,-aoc/2,aoc/2)
+ary<-c(0,1,1,0,0)
+polygon(arx,ary,col=adjustcolor("wheat",alpha.f=0.3),border=NA)
+arrows(aoc/2, 0.6, -aoc/2 ,0.6, col="blue",code=3)
+dev.off();
+
+graph2exp109<-"exp10_9_LRC_curvesshaded.png"
+png(file.path(outputDirectory,graph2exp109),width=plotW,height=plotH)
+par(lwd=2)
+par(cex=1.2)
+par(cex.axis=2.2)
+# Approximating perfect broom, but peak at 0.9 
+y<-(exp(-abs(x)^10)) * 0.9
+plot(x,y,type="h",ylim=c(0,1), ylab="POD", xlab=NULL,col="grey95",ann=FALSE)
+lines(x,y,type="l",col="black")
+aoc<-sum(diff(x) * (head(y,-1)+tail(y,-1)))/2
+lines(c(aoc/2,aoc/2),c(0,1),col='blue')
+lines(c(-aoc/2,-aoc/2),c(0,1),col='blue')
+arx<-c(aoc/2,aoc/2,-aoc/2,-aoc/2,aoc/2)
+ary<-c(0,1,1,0,0)
+polygon(arx,ary,col=adjustcolor("wheat",alpha.f=0.3),border=NA)
+arrows(aoc/2, 0.6, -aoc/2 ,0.6, col="blue",code=3)
+dev.off();
+
+graph2exp10<-"exp10_LRC_curvesshaded.png"
+png(file.path(outputDirectory,graph2exp10),width=plotW,height=plotH)
+par(lwd=2)
+par(cex=1.2)
+par(cex.axis=2.2)
+# Approximating perfect broom
+y<-(exp(-abs(x)^10)) * 0.9
+plot(x,y,type="h",ylim=c(0,1), ylab="POD", xlab=NULL,col="grey95",ann=FALSE)
+lines(x,y,type="l",col="black")
+aoc<-sum(diff(x) * (head(y,-1)+tail(y,-1)))/2
+lines(c(aoc/2,aoc/2),c(0,1),col='blue')
+lines(c(-aoc/2,-aoc/2),c(0,1),col='blue')
+arx<-c(aoc/2,aoc/2,-aoc/2,-aoc/2,aoc/2)
+ary<-c(0,1,1,0,0)
+polygon(arx,ary,col=adjustcolor("wheat",alpha.f=0.3),border=NA)
+arrows(aoc/2, 0.6, -aoc/2 ,0.6, col="blue",code=3)
+dev.off();
+
 
 # Comparisons of existing data/extrapolated curves for canine POD.
 # From Graham's original canine POD work, from the NASAR MLPI text, 
