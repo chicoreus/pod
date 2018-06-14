@@ -30,6 +30,12 @@ pod100 <- expDF(coverage100)
 # describe in a function that takes an airstability class and a sweepwidth and returns a pod in percent
 chia <- function(air,sweepw) { expDF(regression(air)/sweepw) * 100 }
 
+# Lets recalculate these assuming that the lateral range curve is exp(-|x|^10)*0.9, which ends up about 85% of the width of exp(-|x|).
+# Multiplying by 0.9 is reasonable, as Chiacchia et al. report an about 8% failure to alert on the part of the dog rate.
+# Adding an exponent of 10 brings the curve closer to a definite range curve, consistent with dogs as threshold detectors.
+
+chiaThresh <- function(air,sweepw) { expDF((regression(air)*.85)/sweepw) * 100 }
+
 
 # Comparisons of existing data/extrapolated curves for canine POD.
 # From Graham's original canine POD work, from the NASAR MLPI text, 
@@ -233,6 +239,10 @@ points(c(1,6),c(graham[1,2],graham[6,2]),xlim=c(1,6),ylim=c(0,100),xaxt="n",col=
 lines(c(2,3,4),c(chia(2,100),chia(3,100),chia(4,100)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red')
 lines(c(2,3,4),c(chia(2,50),chia(3,50),chia(4,50)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red',lty=5)
 lines(c(2,3,4),c(chia(2,25),chia(3,25),chia(4,25)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red',lty=3)
+
+lines(c(2,3,4),c(chiaThresh(2,100),chiaThresh(3,100),chiaThresh(4,100)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red4')
+lines(c(2,3,4),c(chiaThresh(2,50),chiaThresh(3,50),chiaThresh(4,50)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red4',lty=5)
+lines(c(2,3,4),c(chiaThresh(2,25),chiaThresh(3,25),chiaThresh(4,25)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red4',lty=3)
 # We'll treet just one of the Chiacchia numbers as data, though that isn't quite true there is a lot of
 # estimatioo between the sweep width data and these numbers, and they have caveats on their study,
 # so use the overall crossover point of 50 meters for the full data set as the place to put data markers
@@ -252,8 +262,8 @@ points(c(2,3,4),c(chia(2,50),chia(3,50),chia(4,50)),xlim=c(1,6),ylim=c(0,100),xa
 
 points(c(1),c(55),xlim=c(1,6),ylim=c(0,100),xaxt="n",bg='yellow3',pch=22)
 text(c(1),c(55),labels=c('25m'),pos=4,col='yellow3')
-points(c(2),c(70),xlim=c(1,6),ylim=c(0,100),xaxt="n",bg='yellow3',pch=22)
-text(c(2),c(70),labels=c('75m'),pos=4,col='yellow3')
+points(c(2),c(63),xlim=c(1,6),ylim=c(0,100),xaxt="n",bg='yellow3',pch=22)
+text(c(2),c(63),labels=c('75m'),pos=4,col='yellow3')
 points(c(3),c(63),xlim=c(1,6),ylim=c(0,100),xaxt="n",bg='brown',pch=22)
 text(c(3),c(63),labels=c('100m'),pos=4,col='brown')
 points(c(4),c(70),xlim=c(1,6),ylim=c(0,100),xaxt="n",bg='green',pch=22)
@@ -263,13 +273,49 @@ text(c(5),c(86),labels=c('100m'),pos=4,col='green')
 points(c(6),c(86),xlim=c(1,6),ylim=c(0,100),xaxt="n",bg='green',pch=22)
 text(c(6),c(86),labels=c('100m'),pos=4,col='green')
 
-legend("bottomright", pch = c(NA,NA,NA,  NA,NA,NA,1,  NA,NA,NA,1, 22), 
-                      lty=c(1,5,3,  1,5,3,NA,  1,3,5,NA, NA), 
-                      col = c("black", "black", "black",  "blue", "blue", "blue", "blue", "red","red","red","red", "black"), 
+legend("bottomright", pch = c(NA,NA,NA,  NA,NA,NA,  NA,NA,NA, NA,NA,NA, 22), 
+                      lty=c(1,5,3,  1,5,3,  1,3,5, 1,5,3, NA), 
+                      col = c("black", "black", "black",  "blue", "blue", "blue", "red","red","red", "red4","red4","red4", "black"), 
         legend = c("NASAR MLPI 100m", "NASAR MLPI 50m", "NASAR MLPI 25m", 
-                   "Graham 100m", "Graham 50m", "Graham 25m", "Graham Data", 
-                   "Chiacchia 100m","Chiacchia 50m","Chiacchia 25m","Chiacchia Data",   "Proposed Targets"))
+                   "Graham 100m", "Graham 50m", "Graham 25m",  
+                   "Chiacchia ELR 100m","Chiacchia ELR 50m","Chiacchia ELR 25m", 
+                   "Chiacchia DRLR 100m","Chiacchia DRLR 50m","Chiacchia DRLR 25m", 
+                   "Proposed Targets"))
 
 dev.off()
 
+# Just Chiacchia et al. (two different conversions).
 
+graph4<-"chiacchia.png"
+png(file.path(outputDirectory,graph4),width=plotW,height=plotH)
+
+# Setup graphical parameters
+par(mfrow=c(1,1))
+par(cex=3)
+par(lwd=2)
+par(bty='l')
+
+plot(c(1,3,4),nasar[,2],xlim=c(1,7.7),ylim=c(0,100),xaxt="n",type='l',xlab='Atmospheric Stability Category',ylab='POD (%)',col="white")
+text(c(3.25,3.25),c(10,20),labels=c('A=Least Stable','F=Most Stable'),pos=4)
+axis(1,1:6,LETTERS[1:6])
+
+# Chiacchia
+lines(c(2,3,4),c(chia(2,100),chia(3,100),chia(4,100)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red')
+lines(c(2,3,4),c(chia(2,50),chia(3,50),chia(4,50)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red',lty=5)
+lines(c(2,3,4),c(chia(2,25),chia(3,25),chia(4,25)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red',lty=3)
+
+lines(c(2,3,4),c(chiaThresh(2,100),chiaThresh(3,100),chiaThresh(4,100)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red4')
+lines(c(2,3,4),c(chiaThresh(2,50),chiaThresh(3,50),chiaThresh(4,50)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red4',lty=5)
+lines(c(2,3,4),c(chiaThresh(2,25),chiaThresh(3,25),chiaThresh(4,25)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red4',lty=3)
+# We'll treet just one of the Chiacchia numbers as data, though that isn't quite true there is a lot of
+# estimatioo between the sweep width data and these numbers, and they have caveats on their study,
+# so use the overall crossover point of 50 meters for the full data set as the place to put data markers
+points(c(2,3,4),c(chia(2,50),chia(3,50),chia(4,50)),xlim=c(1,6),ylim=c(0,100),xaxt="n",col='red')
+
+legend("bottomright", pch = c(NA,NA,NA,  NA,NA,NA,1), 
+                      lty=c(1,5,3,  1,5,3,NA), 
+                      col = c("red4", "red4", "red4", "red","red","red","red"), 
+        legend = c("Chiacchia 90%DR 100m", "Chiacchia 90%DR 50m", "Chiacchia 90%DR 25m", 
+                   "Chiacchia 100m","Chiacchia 50m","Chiacchia 25m","Chiacchia Data"))
+
+dev.off()
